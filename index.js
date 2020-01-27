@@ -31,15 +31,6 @@ app.engine('hbs', hbs.engine); // регистрируем в экспресс �
 app.set('view engine', 'hbs'); // использум в экспресс движкок
 app.set('views', 'view'); // назвние папки, где будут лежать все наши шаблоны, по умолчанию это 'views'
 
-app.use(async (req, res,next) => {
-    try {
-        const user = await User.findById('5e2aa7f0c2981a2d60929b21');
-        req.user = user;
-        next()
-    } catch(err) {
-        console.log(err);
-    }
-});
 // сделали папку статической
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -72,15 +63,15 @@ async function start() {
             useFindAndModify: false
         }); // конектимся к базе
 
-        const candidate = await User.findOne();
-        if(!candidate) {
-            const user = new User({
-                email: 'karyna@mail.ru',
-                name: 'Karyna',
-                cart: { items: [] }
-            })
-            await user.save();
-        };
+        // const candidate = await User.findOne();
+        // if(!candidate) {
+        //     const user = new User({
+        //         email: 'karyna@mail.ru',
+        //         name: 'Karyna',
+        //         cart: { items: [] }
+        //     })
+        //     await user.save();
+        // };
 
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
