@@ -3,8 +3,9 @@ const path = require('path');
 const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const MongoStore = require('connect-mongodb-session')(session); //возвращает функцию которую мы должны вызвать и передать пакет для синхронизации, после этого вернет класс, кот можно в дальнейшем использовать
 
-const { database: { url } } = require('./config')
+const { database: { url:mongodb_uri } } = require('./config')
 
 const homeRoutes = require('./routes/home');
 const addRoutes = require('./routes/add');
@@ -20,6 +21,11 @@ const varMiddleware = require('./middleware/variables');
 
 const app = express(); // server
 const PORT = process.env.PORT || 3000;
+
+const store = new MongoStore({
+    collection: 'sessions', //table in DB
+    uri: mongodb_uri
+});
 
 // настройка handlebars
 const hbs = exphbs.create({
@@ -41,7 +47,8 @@ app.use(express.urlencoded({extended: true}));
 app.use(session({
     secret: 'somesecret value',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store
 })); // теперь доступно req.session
 
 app.use(varMiddleware);
@@ -57,21 +64,11 @@ app.use('/auth', authRoutes);
 
 async function start() {
     try {
-        await mongoose.connect(url, {
+        await mongoose.connect(mongodb_uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            useFindAndModify: false
+            useFindAndModify: false,
         }); // конектимся к базе
-
-        // const candidate = await User.findOne();
-        // if(!candidate) {
-        //     const user = new User({
-        //         email: 'karyna@mail.ru',
-        //         name: 'Karyna',
-        //         cart: { items: [] }
-        //     })
-        //     await user.save();
-        // };
 
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
