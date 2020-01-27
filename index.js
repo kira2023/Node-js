@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
+const session = require('express-session');
 
 const { database: { url } } = require('./config')
 
@@ -14,6 +15,8 @@ const ordersRoutes = require('./routes/orders');
 const authRoutes = require('./routes/auth');
 
 const User = require('./models/user');
+
+const varMiddleware = require('./middleware/variables');
 
 const app = express(); // server
 const PORT = process.env.PORT || 3000;
@@ -42,6 +45,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //
 app.use(express.urlencoded({extended: true}));
+
+//session
+app.use(session({
+    secret: 'somesecret value',
+    resave: false,
+    saveUninitialized: false
+})); // теперь доступно req.session
+
+app.use(varMiddleware);
 
 // регистрация роутов
 app.use('/', homeRoutes); // первым параметром это перфиксы, которые будут добавляться к роутам этого главного роута
