@@ -4,7 +4,7 @@ const router = Router();
 
 router.get('/', async (req, res) => {
     // const courses =  await Course.getAllCourses();
-    const courses = await Course.find();
+    const courses = await Course.find().populate('userId', 'email name');
 
     res.render('courses', {
         title: 'Courses',
@@ -15,16 +15,12 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     // const course =  await Course.getCourseById(req.params.id);
-    if(req.params.id !== 'index.css') {
-        const course =  await Course.findById(req.params.id);
-        res.render('course', {
-            layout: 'empty',
-            title: `Course ${course.title}`,
-            course: course.toObject()
-        });
-    } else {
-        res.render('courses')
-    }
+    const course =  await Course.findById(req.params.id);
+    res.render('course', {
+        layout: 'empty',
+        title: `Course ${course.title}`,
+        course: course.toObject()
+    });
 })
 
 router.get('/:id/edit', async (req, res) => {

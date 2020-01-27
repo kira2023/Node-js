@@ -5,8 +5,22 @@ const toCurrency = price => {
     }).format(price);
 }
 
+const toDate = date => {
+    return new Intl.DateTimeFormat('ru-Ru', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    }).format(new Date(date));
+}
+
 document.querySelectorAll('.price').forEach(node => {
     node.textContent = toCurrency(node.textContent);
+});
+document.querySelectorAll('.date').forEach(node => {
+    node.textContent = toDate(node.textContent);
 })
 
 const $card = document.querySelector('#card');
@@ -17,9 +31,9 @@ if ($card) {
 
             fetch('/card/remove/' + id, { method: 'delete' })
                 .then(res => res.json())
-                .then(card => {
-                    if (card.courses.length) {
-                        const html = card.courses
+                .then(cart => {
+                    if (cart.courses.length) {
+                        const html = cart.courses
                         .map(c => {
                             return `
                             <tr>
@@ -32,7 +46,7 @@ if ($card) {
                         `})
                         .join('');
                         $card.querySelector('tbody').innerHTML = html;
-                        $card.querySelector('.price').textContent = toCurrency(card.price);
+                        $card.querySelector('.price').textContent = toCurrency(cart.price);
                     } else {
                         $card.innerHTML = '<p>Card is empty</p>'
                     }

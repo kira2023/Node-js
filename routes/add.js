@@ -11,11 +11,13 @@ router.get('/', (req, res) => {
 
 router.post('/', async (req, res) => {
     const { title, price, img } = req.body;
+    const { user:{ _id:userId } } = req;
     // const course = new Course(title, price, img);
     const course = new Course({
         title,
         price,
-        img
+        img,
+        userId
     })
     try {
         await course.save();

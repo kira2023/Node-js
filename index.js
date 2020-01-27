@@ -10,6 +10,9 @@ const addRoutes = require('./routes/add');
 const coursesRoutes = require('./routes/courses');
 const aboutRoutes = require('./routes/about');
 const cardRoutes = require('./routes/card');
+const ordersRoutes = require('./routes/orders')
+
+const User = require('./models/user');
 
 const app = express(); // server
 const PORT = process.env.PORT || 3000;
@@ -24,6 +27,15 @@ app.engine('hbs', hbs.engine); // регистрируем в экспресс �
 app.set('view engine', 'hbs'); // использум в экспресс движкок
 app.set('views', 'view'); // назвние папки, где будут лежать все наши шаблоны, по умолчанию это 'views'
 
+app.use(async (req, res,next) => {
+    try {
+        const user = await User.findById('5e2aa7f0c2981a2d60929b21');
+        req.user = user;
+        next()
+    } catch(err) {
+        console.log(err);
+    }
+});
 // сделали папку статической
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -36,7 +48,7 @@ app.use('/about', aboutRoutes);
 app.use('/add', addRoutes);
 app.use('/courses', coursesRoutes);
 app.use('/card', cardRoutes);
-
+app.use('/orders', ordersRoutes);
 
 async function start() {
     try {
@@ -44,7 +56,18 @@ async function start() {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useFindAndModify: false
-        });
+        }); // конектимся к базе
+
+        const candidate = await User.findOne();
+        if(!candidate) {
+            const user = new User({
+                email: 'karyna@mail.ru',
+                name: 'Karyna',
+                cart: { items: [] }
+            })
+            await user.save();
+        };
+
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         })
