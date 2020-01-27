@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const User = require('../models/user');
 const router = Router();
+const bcrypt = require('bcryptjs');
 
 router.get('/login', (req, res) => {
     res.render('auth/login', {
@@ -24,7 +25,7 @@ router.post('/login', async (req, res) => {
         const candidate = await User.findOne({ email });
 
         if (candidate) {
-            const isSame = password === candidate.password;
+            const isSame = await bcrypt.compare(password, candidate.password);
 
             if (isSame) {
                 session.user = candidate;
@@ -52,11 +53,12 @@ router.post('/register', async (req, res) => {
         if (candidate) {
             res.redirect('/auth/login#register');
         } else {
+            const hashPassword = await bcrypt.hash(password, 10); //число для более сложного шифрования, чем больше строка тем сложнее взломать
             const user = new User({
                 email,
                 name,
-                password,
-                cart: { items: []}
+                password: hashPassword,
+                cart: { items: [] }
             });
             await user.save();
             res.redirect('/auth/login#login');
