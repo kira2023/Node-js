@@ -17,7 +17,9 @@ const authRoutes = require('./routes/auth');
 
 const User = require('./models/user');
 
+//middlewares
 const varMiddleware = require('./middleware/variables');
+const userMiddleware = require('./middleware/user');
 
 const app = express(); // server
 const PORT = process.env.PORT || 3000;
@@ -51,7 +53,9 @@ app.use(session({
     store
 })); // теперь доступно req.session
 
+//midlewares use
 app.use(varMiddleware);
+app.use(userMiddleware);
 
 // регистрация роутов
 app.use('/', homeRoutes); // первым параметром это перфиксы, которые будут добавляться к роутам этого главного роута
