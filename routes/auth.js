@@ -6,7 +6,9 @@ const bcrypt = require('bcryptjs');
 router.get('/login', (req, res) => {
     res.render('auth/login', {
         title: 'Login',
-        isLogin: true
+        isLogin: true,
+        loginError: req.flash('loginError'), //getter
+        registerError: req.flash('registerError') //getter
     });
 });
 
@@ -35,9 +37,11 @@ router.post('/login', async (req, res) => {
                     res.redirect('/');
                 });
             } else {
+                req.flash('loginError', 'Wrong password')
                 res.redirect('/auth/login#login');
             };
         } else {
+            req.flash('loginError', 'Such user not exists')
             res.redirect('/auth/login#login');
         };
     } catch(err) {
@@ -51,6 +55,7 @@ router.post('/register', async (req, res) => {
         const candidate = await User.findOne({ email });
 
         if (candidate) {
+            req.flash('registerError', 'Such email exists');
             res.redirect('/auth/login#register');
         } else {
             const hashPassword = await bcrypt.hash(password, 10); //число для более сложного шифрования, чем больше строка тем сложнее взломать

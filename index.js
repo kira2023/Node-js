@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongodb-session')(session); //возвращает функцию которую мы должны вызвать и передать пакет для синхронизации, после этого вернет класс, кот можно в дальнейшем использовать
 const csrf = require('csurf');
+const flash = require('connect-flash')
 
 const { database: { url:mongodb_uri } } = require('./config')
 
@@ -57,6 +58,9 @@ app.use(session({
 
 //csurf (after session)
 app.use(csrf());
+
+//connect-flash
+app.use(flash());
 
 //midlewares use
 app.use(varMiddleware);
