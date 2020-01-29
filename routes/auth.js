@@ -2,7 +2,8 @@ const { Router } = require('express');
 const User = require('../models/user');
 const router = Router();
 const bcrypt = require('bcryptjs');
-const { check, validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
+const { registerValidators } = require('../utils/validators');
 
 router.get('/login', (req, res) => {
     res.render('auth/login', {
@@ -50,7 +51,7 @@ router.post('/login', async (req, res) => {
     };
 });
 
-router.post('/register', check('email').isEmail(), async (req, res) => {
+router.post('/register', registerValidators, async (req, res) => {
     try {
         const { email, password, confirm, name } = req.body;
         const candidate = await User.findOne({ email });
