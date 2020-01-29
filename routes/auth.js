@@ -53,8 +53,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/register', registerValidators, async (req, res) => {
     try {
-        const { email, password, confirm, name } = req.body;
-        const candidate = await User.findOne({ email });
+        const { email, password, name } = req.body;
         const errors = validationResult(req);
         
         if (!errors.isEmpty()) {
@@ -62,20 +61,15 @@ router.post('/register', registerValidators, async (req, res) => {
             return res.status(422).redirect('/auth/login#register');//ошибка валидации 422
         }
 
-        if (candidate) {
-            req.flash('registerError', 'Such email exists');
-            res.redirect('/auth/login#register');
-        } else {
-            const hashPassword = await bcrypt.hash(password, 10); //число для более сложного шифрования, чем больше строка тем сложнее взломать
-            const user = new User({
-                email,
-                name,
-                password: hashPassword,
-                cart: { items: [] }
-            });
-            await user.save();
-            res.redirect('/auth/login#login');
-        };
+        const hashPassword = await bcrypt.hash(password, 10); //число для более сложного шифрования, чем больше строка тем сложнее взломать
+        const user = new User({
+            email,
+            name,
+            password: hashPassword,
+            cart: { items: [] }
+        });
+        await user.save();
+        res.redirect('/auth/login#login');
     } catch(err) {
         console.log(err);
     };
