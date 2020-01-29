@@ -23,6 +23,7 @@ const User = require('./models/user');
 //middlewares
 const varMiddleware = require('./middleware/variables');
 const userMiddleware = require('./middleware/user');
+const errorHandler = require('./middleware/error');
 
 const app = express(); // server
 const PORT = process.env.PORT || 3000;
@@ -62,7 +63,7 @@ app.use(csrf());
 //connect-flash
 app.use(flash());
 
-//midlewares use
+//middlewares use
 app.use(varMiddleware);
 app.use(userMiddleware);
 
@@ -74,6 +75,9 @@ app.use('/courses', coursesRoutes);
 app.use('/card', cardRoutes);
 app.use('/orders', ordersRoutes);
 app.use('/auth', authRoutes);
+
+//middlewares 404
+app.use(errorHandler);// подключаем в конце чтобы express если не найдет роут взял этот
 
 async function start() {
     try {
@@ -93,35 +97,3 @@ async function start() {
 }
 
 start();
-
-// app.get('/', (req, res, next) => {
-//     // res.status(200); // 200 default
-//     // res.sendFile(path.join(__dirname, 'view', 'index.html'));  // без handlebars
-
-//     res.render('index', {
-//         title: 'Home page',
-//         isHome: true
-//     }); //название страницы которую отрендарить без расширения и папок потому что все это настроено выше
-// });
-
-// app.get('/about', (req, res, next) => {
-//     // res.sendFile(path.join(__dirname, 'view', 'about.html')); // без handlebars
-
-//     res.render('about', {
-//         title: 'About'
-//     }); //название страницы которую отрендарить
-// })
-
-// app.get('/courses', (req, res, next) => {
-//     res.render('courses', {
-//         title: 'Courses',
-//         isCourses: true
-//     }); //название страницы которую отрендарить
-// })
-
-// app.get('/add', (req, res, next) => {
-//     res.render('add', {
-//         title: 'Add course',
-//         isAdd: true
-//     }); //название страницы которую отрендарить
-// })
