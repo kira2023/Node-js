@@ -24,6 +24,7 @@ const User = require('./models/user');
 //middlewares
 const varMiddleware = require('./middleware/variables');
 const userMiddleware = require('./middleware/user');
+const fileMiddleware = require('./middleware/file');
 const errorHandler = require('./middleware/error');
 
 const app = express(); // server
@@ -57,6 +58,8 @@ app.use(session({
     saveUninitialized: false,
     store
 })); // теперь доступно req.session
+
+app.use(fileMiddleware.single('avatar'));
 
 //csurf (after session)
 app.use(csrf());
