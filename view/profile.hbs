@@ -1,0 +1,30 @@
+<h1>Profile</h1>
+
+<div class="row">
+    <div class="col s6">
+        <img src="http://avatars.mds.yandex.net/get-ott/374297/2a000001616b87458162c9216ccd5144e94d/orig" class="avatar" alt="avatar">
+        <p>No Avatar</p>
+    </div>
+    <div class="col s6">
+        <form action="/profile" method="POST">
+            <p>Your email: <strong>{{user.email}}</strong></p>
+            <input id='name' name="name" type="text" class="validate" required value="{{user.name}}">
+            <label for="name">Your Name</label>
+            <span class="helper-text" data-error="Name must not empty"></span>
+
+            <div class="file-field input-field">
+                <div class="btn">
+                    <span>Avatar</span>
+                    <input type="file" name="avatar">
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text">
+                </div>
+            </div>
+
+            <input name="_csrf" type="hidden" value="{{csrf}}">
+
+            <button type="submit" class="btn">Change</button>
+        </form>
+    </div>
+</div>
