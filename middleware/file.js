@@ -2,10 +2,10 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
     destination(req, file, callback) {
-        callback(null, 'images'); //(err, path to folder)
+        callback(null, 'image'); //(err, path to folder)
     },//куда пихать фаил
     filename(req, file, callback) {
-        callback(null, new Date().toISOString() + '-' + file.originalname)
+        callback(null, new Date().getUTCMilliseconds() + '-' + file.originalname)
     }//говорим как назвать новый фаил 
 });// куда и как сохранять файлы, принимает объект где будут фукнции которые будут вызваны в процессе того как фаил будет загружаться
 

@@ -47,6 +47,7 @@ app.set('views', 'view'); // назвние папки, где будут леж
 
 // сделали папку статической
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/image', express.static(path.join(__dirname, 'image')));
 
 //
 app.use(express.urlencoded({extended: true}));

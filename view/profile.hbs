@@ -2,11 +2,14 @@
 
 <div class="row">
     <div class="col s6">
-        <img src="http://avatars.mds.yandex.net/get-ott/374297/2a000001616b87458162c9216ccd5144e94d/orig" class="avatar" alt="avatar">
-        <p>No Avatar</p>
+        {{#if user.avatarUrl}}
+            <img src="/image/{{user.avatarUrl}}" class="avatar" alt="avatar-{{user.name}}">
+        {{else}}
+            <p>No Avatar</p>
+        {{/if}}
     </div>
     <div class="col s6">
-        <form action="/profile" method="POST">
+        <form action="/profile" method="POST" enctype="multipart/form-data">
             <p>Your email: <strong>{{user.email}}</strong></p>
             <input id='name' name="name" type="text" class="validate" required value="{{user.name}}">
             <label for="name">Your Name</label>
